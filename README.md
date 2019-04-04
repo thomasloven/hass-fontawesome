@@ -36,6 +36,6 @@ So,
 
 - to get a solid heart, use `fas:heart`
 - to get a heart outline, use `far:heart`
-- to get the twitter symbo, use `fab:twitter`
+- to get the twitter symbol, use `fab:twitter`
 
 
