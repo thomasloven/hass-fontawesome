@@ -47,15 +47,29 @@ The icons are useable anywhere in Home Assistant - not only in lovelace.
 
 ### Can I use this with my Pro icon set?
 
-You probably can, but you'll need to recompile things yourself.
+Yes you can, but you'll need to build things yourself.
 
-I do not own the Pro Icon set, so I don't even know what structure it has.
+1. Get your personal token first.
 
-You may be able to find some helpful information [here](https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers).
+Go to https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers and find your token. The command will look like this:
 
-I also know that people have had success with Pro Icons and the [previous version of this integration](https://github.com/thomasloven/hass-fontawesome/tree/4ed9d97bbb1621d4ff68a0053add29294529f5b0).
+```
+$ npm config set "@fortawesome:registry" https://npm.fontawesome.com/ && \
+  npm config set "//npm.fontawesome.com/:_authToken" XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+```
 
-PRs with the process are very welcome.
+2. Clone this repository and modify it to build with the `fontawesome-pro` icons. This will also build the `duotone` and `light` series.
+
+```
+$ git clone https://github.com/thomasloven/hass-fontawesome
+$ cd hass-fontawesome/
+$ git apply < fontawesome-pro.patch
+$ npm install && npm run-script build
+```
+
+> Note that the `duotone` serie doesn't seem to work correctly yet in Home Assistant, since all colors are mapped to one color.
+
+3. Copy the output of `custom_components/fontawesome/` to you Home Assistant installation.
 
 ### Can I set this up in configure.yaml instead?
 
