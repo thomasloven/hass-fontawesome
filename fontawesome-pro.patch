@@ -9,7 +9,7 @@ index 7534066..e72e552 100644
 +    'light': 'fal.js',
 +    'duotone': 'fad.js',
  }
- 
+
  async def async_setup(hass, config):
 diff --git a/custom_components/fontawesome/config_flow.py b/custom_components/fontawesome/config_flow.py
 index e2bf5ac..2007411 100644
@@ -122,10 +122,10 @@ index 1d7eb2e..ddcbff7 100644
 +    ...common,
 +  },
  ];
-diff --git a/custom_components/fontawesome/.translations/en.json b/custom_components/fontawesome/.translations/en.json
+diff --git a/custom_components/fontawesome/translations/en.json b/custom_components/fontawesome/translations/en.json
 index 84b9633..d1d0e16 100644
---- a/custom_components/fontawesome/.translations/en.json
-+++ b/custom_components/fontawesome/.translations/en.json
+--- a/custom_components/fontawesome/translations/en.json
++++ b/custom_components/fontawesome/translations/en.json
 @@ -13,7 +13,9 @@
          "data": {
            "regular": "Include Regular icons (far:)",
