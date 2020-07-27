@@ -1,139 +1,166 @@
-diff --git a/custom_components/fontawesome/__init__.py b/custom_components/fontawesome/__init__.py
-index 7534066..e72e552 100644
---- a/custom_components/fontawesome/__init__.py
-+++ b/custom_components/fontawesome/__init__.py
-@@ -11,6 +11,8 @@ ICON_FILES = {
-     'regular': 'far.js',
-     'solid': 'fas.js',
-     'brands': 'fab.js',
-+    'light': 'fal.js',
-+    'duotone': 'fad.js',
- }
- 
- async def async_setup(hass, config):
-diff --git a/custom_components/fontawesome/config_flow.py b/custom_components/fontawesome/config_flow.py
-index e2bf5ac..2007411 100644
---- a/custom_components/fontawesome/config_flow.py
-+++ b/custom_components/fontawesome/config_flow.py
-@@ -42,6 +42,14 @@ class FontawesomeEditFlow(config_entries.OptionsFlow):
-                         "brands",
-                         default=self.config_entry.options.get("brands", False),
-                     ): bool,
-+                    vol.Optional(
-+                        "light",
-+                        default=self.config_entry.options.get("light", False),
-+                    ): bool,
-+                    vol.Optional(
-+                        "duotone",
-+                        default=self.config_entry.options.get("duotone", False),
-+                    ): bool,
-                 }
-             )
-         )
-\ No newline at end of file
 diff --git a/js/fab.js b/js/fab.js
-index 2aae5d5..7131118 100644
+index c589bc6..1c4cc46 100644
 --- a/js/fab.js
 +++ b/js/fab.js
 @@ -1,4 +1,4 @@
--import txt from "@fortawesome/fontawesome-free/sprites/brands.svg"
-+import txt from "@fortawesome/fontawesome-pro/sprites/brands.svg"
+-import txt from "@fortawesome/fontawesome-pro/sprites/brands.svg"
++import txt from "@fortawesome/fontawesome-free/sprites/brands.svg"
  const iconset = document.createElement("ha-iconset-svg");
  iconset.name="fab";
  iconset.size="1024";
 diff --git a/js/fad.js b/js/fad.js
-new file mode 100644
-index 0000000..77fab15
---- /dev/null
-+++ b/js/fad.js
-@@ -0,0 +1,6 @@
-+import txt from "@fortawesome/fontawesome-pro/sprites/duotone.svg"
-+const iconset = document.createElement("ha-iconset-svg");
-+iconset.name="fad";
-+iconset.size="1024";
-+iconset.innerHTML = txt.replace(/\<symbol/g, '<g').replace(/\<\/symbol\>/g, '</g>');
-+document.body.appendChild(iconset);
+deleted file mode 100644
+index b8f04ee..0000000
+--- a/js/fad.js
++++ /dev/null
+@@ -1,32 +0,0 @@
+-import txt from "@fortawesome/fontawesome-pro/sprites/duotone.svg"
+-const iconset = document.createElement("ha-iconset-svg");
+-iconset.name="fad";
+-iconset.size="1024";
+-iconset.innerHTML = txt.replace(/\<symbol/g, '<g').replace(/\<\/symbol\>/g, '</g>');
+-
+-if(! customElements.get("ha-iconset-svg")) {
+-    const meta = document.createElement("iron-meta")
+-    meta.type = "iconset";
+-    meta.key = iconset.name;
+-    meta.value = iconset;
+-    iconset.appendChild(meta);
+-  
+-    iconset.applyIcon = function(element, iconName) {
+-      this.removeIcon(element);
+-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+-      const content = this.querySelector(`[id='${iconName}']`).cloneNode(true);
+-      svg.appendChild(content);
+-      svg.setAttribute('viewBox', content.getAttribute('viewBox') || '0 0 24 24');
+-      svg.style.cssText = 'pointer-events: none; display: block; width: 100%; height: 100%;';
+-      element.shadowRoot.insertBefore(svg, element.shadowRoot.childNodes[0]);
+-      return element._svgIcon = svg;
+-    }.bind(iconset);
+-  
+-    iconset.removeIcon = function(element) {
+-      if(!element._svgIcon) return;
+-      element.shadowRoot.removeChild(element._svgIcon);
+-      element._svgIcon = null;
+-    }.bind(iconset);
+-  }
+-
+-document.body.appendChild(iconset);
 diff --git a/js/fal.js b/js/fal.js
-new file mode 100644
-index 0000000..ce948d0
---- /dev/null
-+++ b/js/fal.js
-@@ -0,0 +1,6 @@
-+import txt from "@fortawesome/fontawesome-pro/sprites/light.svg"
-+const iconset = document.createElement("ha-iconset-svg");
-+iconset.name="fal";
-+iconset.size="1024";
-+iconset.innerHTML = txt.replace(/\<symbol/g, '<g').replace(/\<\/symbol\>/g, '</g>');
-+document.body.appendChild(iconset);
+deleted file mode 100644
+index 03489a8..0000000
+--- a/js/fal.js
++++ /dev/null
+@@ -1,32 +0,0 @@
+-import txt from "@fortawesome/fontawesome-pro/sprites/light.svg"
+-const iconset = document.createElement("ha-iconset-svg");
+-iconset.name="fal";
+-iconset.size="1024";
+-iconset.innerHTML = txt.replace(/\<symbol/g, '<g').replace(/\<\/symbol\>/g, '</g>');
+-
+-if(! customElements.get("ha-iconset-svg")) {
+-    const meta = document.createElement("iron-meta")
+-    meta.type = "iconset";
+-    meta.key = iconset.name;
+-    meta.value = iconset;
+-    iconset.appendChild(meta);
+-  
+-    iconset.applyIcon = function(element, iconName) {
+-      this.removeIcon(element);
+-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+-      const content = this.querySelector(`[id='${iconName}']`).cloneNode(true);
+-      svg.appendChild(content);
+-      svg.setAttribute('viewBox', content.getAttribute('viewBox') || '0 0 24 24');
+-      svg.style.cssText = 'pointer-events: none; display: block; width: 100%; height: 100%;';
+-      element.shadowRoot.insertBefore(svg, element.shadowRoot.childNodes[0]);
+-      return element._svgIcon = svg;
+-    }.bind(iconset);
+-  
+-    iconset.removeIcon = function(element) {
+-      if(!element._svgIcon) return;
+-      element.shadowRoot.removeChild(element._svgIcon);
+-      element._svgIcon = null;
+-    }.bind(iconset);
+-  }
+-
+-document.body.appendChild(iconset);
 diff --git a/js/far.js b/js/far.js
-index 78445a7..a1c8acb 100644
+index 1b72f09..190361b 100644
 --- a/js/far.js
 +++ b/js/far.js
 @@ -1,4 +1,4 @@
--import txt from "@fortawesome/fontawesome-free/sprites/regular.svg"
-+import txt from "@fortawesome/fontawesome-pro/sprites/regular.svg"
+-import txt from "@fortawesome/fontawesome-pro/sprites/regular.svg"
++import txt from "@fortawesome/fontawesome-free/sprites/regular.svg"
  const iconset = document.createElement("ha-iconset-svg");
  iconset.name="far";
  iconset.size="1024";
 diff --git a/js/fas.js b/js/fas.js
-index 97bd01c..3e4a307 100644
+index f84f0c0..285d87a 100644
 --- a/js/fas.js
 +++ b/js/fas.js
 @@ -1,4 +1,4 @@
--import txt from "@fortawesome/fontawesome-free/sprites/solid.svg"
-+import txt from "@fortawesome/fontawesome-pro/sprites/solid.svg"
+-import txt from "@fortawesome/fontawesome-pro/sprites/solid.svg"
++import txt from "@fortawesome/fontawesome-free/sprites/solid.svg"
  const iconset = document.createElement("ha-iconset-svg");
  iconset.name="fas";
  iconset.size="1024";
+diff --git a/package-lock.json b/package-lock.json
+index 4f33217..c766de7 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,13 +1,13 @@
+ {
+   "name": "fontawesome",
+-  "version": "1.2.0",
++  "version": "1.1.0",
+   "lockfileVersion": 1,
+   "requires": true,
+   "dependencies": {
+-    "@fortawesome/fontawesome-pro": {
+-      "version": "5.14.0",
+-      "resolved": "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/5.14.0/fontawesome-pro-5.14.0.tgz",
+-      "integrity": "sha512-mdxmCa8yHPXaM5WTRskL1iQf6JObI+l7R0Qa0/u9QOpmRUBkv1g/B3q+YQPaQmZOUy/5gZD9iwun5x4IELusWA=="
++    "@fortawesome/fontawesome-free": {
++      "version": "5.13.0",
++      "resolved": "https://registry.npmjs.org/@fortawesome/fontawesome-free/-/fontawesome-free-5.13.0.tgz",
++      "integrity": "sha512-xKOeQEl5O47GPZYIMToj6uuA2syyFlq9EMSl2ui0uytjY9xbe8XS0pexNWmxrdcCyNGyDmLyYw5FtKsalBUeOg=="
+     },
+     "@webassemblyjs/ast": {
+       "version": "1.9.0",
 diff --git a/package.json b/package.json
-index 4d501f5..76f1335 100644
+index 29a8834..a9c5f0a 100644
 --- a/package.json
 +++ b/package.json
-@@ -17,6 +17,6 @@
-     "webpack-cli": "^3.3.10"
+@@ -16,6 +16,6 @@
+     "webpack-cli": "^3.3.11"
    },
    "dependencies": {
--    "@fortawesome/fontawesome-free": "^5.11.2"
-+    "@fortawesome/fontawesome-pro": "^5.11.2"
+-    "@fortawesome/fontawesome-pro": "^5.13.0"
++    "@fortawesome/fontawesome-free": "^5.13.0"
    }
  }
 diff --git a/webpack.config.js b/webpack.config.js
-index 1d7eb2e..ddcbff7 100644
+index f94b44a..1d7eb2e 100644
 --- a/webpack.config.js
 +++ b/webpack.config.js
-@@ -37,4 +37,20 @@ module.exports = [
+@@ -37,20 +37,4 @@ module.exports = [
      },
      ...common,
    },
-+  {
-+    entry: './js/fal.js',
-+    output: {
-+      filename: 'custom_components/fontawesome/data/fal.js',
-+      path: path.resolve(__dirname)
-+    },
-+    ...common,
-+  },
-+  {
-+    entry: './js/fad.js',
-+    output: {
-+      filename: 'custom_components/fontawesome/data/fad.js',
-+      path: path.resolve(__dirname)
-+    },
-+    ...common,
-+  },
+-  {
+-    entry: './js/fal.js',
+-    output: {
+-      filename: 'custom_components/fontawesome/data/fal.js',
+-      path: path.resolve(__dirname)
+-    },
+-    ...common,
+-  },
+-  {
+-    entry: './js/fad.js',
+-    output: {
+-      filename: 'custom_components/fontawesome/data/fad.js',
+-      path: path.resolve(__dirname)
+-    },
+-    ...common,
+-  },
  ];
-diff --git a/custom_components/fontawesome/.translations/en.json b/custom_components/fontawesome/.translations/en.json
-index 84b9633..d1d0e16 100644
---- a/custom_components/fontawesome/.translations/en.json
-+++ b/custom_components/fontawesome/.translations/en.json
-@@ -13,7 +13,9 @@
-         "data": {
-           "regular": "Include Regular icons (far:)",
-           "solid": "Include Solid icons (fas:)",
--          "brands": "Include Brand icons (fab:)"
-+          "brands": "Include Brand icons (fab:)",
-+          "light": "Include Light icons (fal:)",
-+          "duotone": "Include Duotone icons (fad:)"
-         }
-       }
-     }
