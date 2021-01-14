@@ -1,0 +1,20 @@
+title: Home
+views:
+  - path: default_view
+    title: Home
+    badges:
+      - entity: binary_sensor.updater
+      - entity: binary_sensor.basement_floor_wet
+      - entity: binary_sensor.movement_backyard
+      - entity: mailbox.demomailbox
+      - entity: sensor.outside_temperature
+      - entity: sensor.outside_humidity
+      - entity: sun.sun
+    cards:
+      - type: entities
+        entities:
+          - air_quality.demo_air_quality_home
+          - air_quality.demo_air_quality_office
+        title: Air Quality
+      - type: alarm-panel
+        entity: alarm_control_panel.alarm

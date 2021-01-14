@@ -1,9 +1,12 @@
 from aiohttp import web
 from homeassistant.components.http import HomeAssistantView
 import os.path
+from homeassistant.util import sanitize_path
+
 
 def setup_view(hass, name):
     hass.http.register_view(CustomComponentServer(hass, name))
+
 
 class CustomComponentServer(HomeAssistantView):
 
@@ -16,6 +19,8 @@ class CustomComponentServer(HomeAssistantView):
         self.domain = domain
 
     async def get(self, request, filename):
+
+        filename = sanitize_path(filename)
         path = os.path.join(self.config_dir, 'custom_components', self.domain, filename)
         filecontent = ""
 
@@ -23,7 +28,7 @@ class CustomComponentServer(HomeAssistantView):
             with open(path, mode="r", encoding="utf-8", errors="ignore") as localfile:
                 filecontent = localfile.read()
                 localfile.close()
-        except Exception as exception:
+        except Exception:
             return web.Response(status=404)
 
         return web.Response(body=filecontent, content_type="text/javascript", charset="utf-8")
