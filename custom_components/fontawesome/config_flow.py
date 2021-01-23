@@ -6,6 +6,7 @@ from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 
+
 @config_entries.HANDLERS.register("fontawesome")
 class FontawesomeConfigFlow(config_entries.ConfigFlow):
     async def async_step_user(self, user_input=None):
@@ -17,6 +18,7 @@ class FontawesomeConfigFlow(config_entries.ConfigFlow):
     @callback
     def async_get_options_flow(config_entry):
         return FontawesomeEditFlow(config_entry)
+
 
 class FontawesomeEditFlow(config_entries.OptionsFlow):
     def __init__(self, config_entry):
