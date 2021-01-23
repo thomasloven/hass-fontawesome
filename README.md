@@ -80,6 +80,8 @@ fontawesome:
   regular:
   solid:
   brands:
+  light:   # Available with fontawesome pro only.
+  duotone: # Available with fontawesome pro only.
 ```
 
 Just remove the lines for the icon sets you don't want.
