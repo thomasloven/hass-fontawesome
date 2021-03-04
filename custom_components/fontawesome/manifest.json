@@ -1,6 +1,7 @@
 {
     "domain": "fontawesome",
     "name": "Fontawesome icons",
+    "version":"1.3.2",
     "documentation": "",
     "dependencies": ["frontend"],
     "codeowners": [],
