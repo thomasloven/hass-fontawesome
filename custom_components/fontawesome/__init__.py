@@ -1,3 +1,4 @@
+from homeassistant.components.frontend import add_extra_js_url
 DOMAIN = "fontawesome"
 
 DATA_EXTRA_MODULE_URL = 'frontend_extra_module_url'
@@ -40,11 +41,6 @@ async def _update_listener(hass, config_entry):
 
 
 def register_modules(hass, modules):
-    if DATA_EXTRA_MODULE_URL not in hass.data:
-        hass.data[DATA_EXTRA_MODULE_URL] = set()
-    url_set = hass.data[DATA_EXTRA_MODULE_URL]
-
     for k, v in ICON_FILES.items():
-        url_set.discard(ICONS_URL+v)
         if k in modules and modules[k] is not False:
-            url_set.add(ICONS_URL+v)
+            add_extra_js_url(hass, ICONS_URL+v)
