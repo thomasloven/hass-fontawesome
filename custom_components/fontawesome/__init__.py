@@ -1,3 +1,5 @@
+from homeassistant.const import __version__ as HAVERSION
+
 DOMAIN = "fontawesome"
 
 DATA_EXTRA_MODULE_URL = 'frontend_extra_module_url'
@@ -45,6 +47,11 @@ def register_modules(hass, modules):
     url_set = hass.data[DATA_EXTRA_MODULE_URL]
 
     for k, v in ICON_FILES.items():
-        url_set.discard(ICONS_URL+v)
+        ha_version = HAVERSION.split(".")
+        if int(ha_version[0]) <=2021 and int(ha_version[1]) <=4:
+            url_set.discard(ICONS_URL+v)
+        else:
+            url_set.remove(ICONS_URL+v)
+        
         if k in modules and modules[k] is not False:
             url_set.add(ICONS_URL+v)
