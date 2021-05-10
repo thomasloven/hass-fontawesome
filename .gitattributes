@@ -1,1 +1,2 @@
 custom_components/**/*.js binary
+custom_components/**/*.svg binary
