@@ -61,10 +61,10 @@ class FontAwesomeView(HomeAssistantView):
         try:
             with open(path, mode="r", encoding="utf-8", errors="ignore") as fp:
                 data = fp.read()
-                svgPath = re.search('d="([^"]+)"', data).group(1)
-                viewBox = re.search('viewBox="([^"]+)"', data).group(1)
-                response["viewBox"] = viewBox
-                response["path"] = svgPath
+                svgPath = re.search('d="([^"]+)"', data)
+                viewBox = re.search('viewBox="([^"]+)"', data)
+                response["viewBox"] = viewBox.group(1) if viewBox else None
+                response["path"] = svgPath.group(1) if svgPath else None
         except Exception:
             pass
 
