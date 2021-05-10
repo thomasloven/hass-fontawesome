@@ -10,8 +10,9 @@ Use free icons from the [fontawesome](https://fontawesome.com) set in Home-assis
 
 - Restart Home Assistant
 
-- Go to your integrations configuration and add FontAwesome
-  ![Install](https://user-images.githubusercontent.com/1299821/68902965-f731fc80-0739-11ea-8712-9329243ca8f6.png)
+- Click this: [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=fontawesome)
+
+  - Alternatively: Go to your integrations configuration, click Add Integration and find "Fontawesome icons"
 
 # Icon sets
 

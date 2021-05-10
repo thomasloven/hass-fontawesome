@@ -59,7 +59,7 @@ customElements.whenDefined("ha-svg-icon").then(() => {
     const styleEl =
       this.shadowRoot.querySelector("style") || document.createElement("style");
     styleEl.innerHTML =
-      "svg path.secondary { fill: var(--paper-item-icon-color); }";
+      "svg path.secondary { fill: var(--disabled-text-color); }";
     this.shadowRoot.appendChild(styleEl);
     const root = this.shadowRoot.querySelector("g");
     for (const k in paths) {
