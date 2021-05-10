@@ -5,7 +5,7 @@ from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
 
-from homeassistant.util import sanitize_path
+from homeassistant.util import raise_if_invalid_path
 
 LOGGER = logging.getLogger(__name__)
 
@@ -50,7 +50,9 @@ class FontAwesomeView(HomeAssistantView):
 
     @callback
     async def get(self, request, filename):
-        filename = sanitize_path(filename + ".svg")
+        filename = filename + '.svg'
+
+        raise_if_invalid_path(filename)
 
         path = os.path.join(self.data_dir, filename)
 
