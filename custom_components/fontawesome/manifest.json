@@ -3,6 +3,7 @@
     "name": "Fontawesome icons",
     "documentation": "https://github.com/thomasloven/hass-fontawesome",
     "dependencies": ["frontend"],
+    "after_dependencies": ["scrape"],
     "codeowners": [],
     "requirements": [],
     "config_flow": true,

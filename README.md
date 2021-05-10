@@ -42,13 +42,11 @@ The icons are useable anywhere in Home Assistant - not only in lovelace.
 Yes.
 You need the `.svg` files from the Pro icon set.
 
-Place the icon files in `<Home Assistant config>/custom_components/fontawesome/data/pro/` and access them with the `fapro:` prefix, e.g. `fapro:lightbulb-on`.
-
-This does not work with the duotone icon set.
+Place the icon files in `<Home Assistant config>/custom_components/fontawesome/data/pro/` (the filenames must end with `.svg`) and access them with the `fapro:` prefix, e.g. `fapro:lightbulb-on`.
 
 ### Can I add non-fontawesome icons using this?
 
-Yes, provided you have svg files of the icons which consist of a single `<path>` element.
+Yes, provided you have svg files of the icons which consist one or more `<path>` elements and no transforms or other weird stuff.
 
 Just do the same as for the Pro icon set above. Put svg files in the same directory, and use the same prefix.
 

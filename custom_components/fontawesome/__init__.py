@@ -1,6 +1,8 @@
 import os
-import re
 import logging
+
+from bs4 import BeautifulSoup
+
 from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
@@ -16,6 +18,13 @@ LOADER_URL = f'/{DOMAIN}/main.js'
 LOADER_PATH = f'custom_components/{DOMAIN}/main.js'
 ICONS_URL = f'/{DOMAIN}/icons'
 ICONS_PATH = f'custom_components/{DOMAIN}/data'
+
+FONTAWESOME_CLASSES = {
+    "fa-primary": "primary",
+    "fa-secondary": "secondary",
+    "primary": "primary",
+    "secondary": "secondary",
+}
 
 
 async def async_setup(hass, config):
@@ -61,10 +70,19 @@ class FontAwesomeView(HomeAssistantView):
         try:
             with open(path, mode="r", encoding="utf-8", errors="ignore") as fp:
                 data = fp.read()
-                svgPath = re.search('d="([^"]+)"', data)
-                viewBox = re.search('viewBox="([^"]+)"', data)
-                response["viewBox"] = viewBox.group(1) if viewBox else None
-                response["path"] = svgPath.group(1) if svgPath else None
+
+                soup = BeautifulSoup(data, 'html.parser')
+                paths = soup.find_all("path")
+                svgPath = " ".join([p.get("d", "") for p in paths])
+                viewBox = soup.svg.get("viewbox", None) if soup.svg else None
+
+                response["viewBox"] = viewBox
+                response["path"] = svgPath
+                response["paths"] = {}
+                for p in paths:
+                    key = FONTAWESOME_CLASSES.get(p.get("class", [])[0], None)
+                    if key:
+                        response["paths"][key] = p.get("d", "")
         except Exception:
             pass
 
