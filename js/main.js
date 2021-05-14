@@ -7,22 +7,50 @@ const PREFIXES = {
   far: "regular",
   fas: "solid",
   fapro: "pro",
+  facustom: "pro",
 };
 
-const getIcon = (iconSet, iconName) =>
-  new Promise(async (resolve, reject) => {
+const PATH_CLASSES = {
+  "fa-primary": "primary",
+  "fa-secondary": "secondary",
+  primary: "primary",
+  secondary: "secondary",
+};
+
+const preProcessIcon = async (iconSet, iconName) => {
+  const [icon, format] = iconName.split("#");
+  const data = await fetch(`/${DOMAIN}/icons/${iconSet}/${icon}.svg`);
+  const text = await data.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, "text/html");
+
+  if (!doc || !doc.querySelector("svg")) return {};
+
+  const viewBox = doc.querySelector("svg").getAttribute("viewBox");
+  const _paths = doc.querySelectorAll("path");
+  const paths = {};
+  let path = "";
+  for (const pth of _paths) {
+    path = path + pth.getAttribute("d");
+    const cls = pth.classList[0];
+    if (PATH_CLASSES[cls]) {
+      paths[PATH_CLASSES[cls]] = pth.getAttribute("d");
+    }
+  }
+
+  return { viewBox, path, paths, format };
+};
+
+const getIcon = (iconSet, iconName) => {
+  return new Promise(async (resolve, reject) => {
     const icon = `${iconSet}:${iconName}`;
     if (ICON_STORE[icon]) resolve(ICON_STORE[icon]);
 
-    const data = await fetch(`/${DOMAIN}/icons/${iconSet}/${iconName}`);
-
-    const js = data.json();
-    if (js && (await js).path) {
-      ICON_STORE[icon] = js;
-    }
+    ICON_STORE[icon] = preProcessIcon(iconSet, iconName);
 
     resolve(ICON_STORE[icon]);
   });
+};
 
 if (!("customIconsets" in window)) {
   window.customIconsets = {};
@@ -32,6 +60,7 @@ window.customIconsets["fab"] = (iconName) => getIcon("brands", iconName);
 window.customIconsets["far"] = (iconName) => getIcon("regular", iconName);
 window.customIconsets["fas"] = (iconName) => getIcon("solid", iconName);
 window.customIconsets["fapro"] = (iconName) => getIcon("pro", iconName);
+window.customIconsets["facustom"] = (iconName) => getIcon("pro", iconName);
 
 // Duotone patches
 customElements.whenDefined("ha-icon").then(() => {
@@ -48,6 +77,9 @@ customElements.whenDefined("ha-icon").then(() => {
       return;
     }
     el.setPaths(icon.paths);
+    if (icon.format) {
+      el.classList.add(...icon.format.split("-"));
+    }
   };
 });
 
@@ -56,12 +88,38 @@ customElements.whenDefined("ha-svg-icon").then(() => {
 
   HaSvgIcon.prototype.setPaths = async function (paths) {
     await this.updateComplete;
+    if (Object.keys(paths).length === 0) return;
     const styleEl =
       this.shadowRoot.querySelector("style") || document.createElement("style");
-    styleEl.innerHTML =
-      "svg path.secondary { fill: var(--disabled-text-color); }";
+    styleEl.innerHTML = `
+      .secondary {
+        opacity: 0.4;
+      }
+      :host(.invert) .secondary {
+        opacity: 1;
+      }
+      :host(.invert) .primary {
+        opacity: 0.4;
+      }
+      :host(.color) .primary {
+        opacity: 1;
+      }
+      :host(.color) .secondary {
+        opacity: 1;
+      }
+      :host(.color:not(.invert)) .secondary {
+        fill: var(--icon-secondary-color, var(--disabled-text-color));
+      }
+      :host(.color.invert) .primary {
+        fill: var(--icon-secondary-color, var(--disabled-text-color));
+      }
+      `;
     this.shadowRoot.appendChild(styleEl);
     const root = this.shadowRoot.querySelector("g");
+    console.log(paths);
+    if (root.firstElementChild) {
+      root.firstElementChild.style.display = "none";
+    }
     for (const k in paths) {
       const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
       el.setAttribute("d", paths[k]);
