@@ -88,7 +88,7 @@ customElements.whenDefined("ha-svg-icon").then(() => {
 
   HaSvgIcon.prototype.setPaths = async function (paths) {
     await this.updateComplete;
-    if (Object.keys(paths).length === 0) return;
+    if (paths == undefined || Object.keys(paths).length === 0) return;
     const styleEl =
       this.shadowRoot.querySelector("style") || document.createElement("style");
     styleEl.innerHTML = `
@@ -116,7 +116,6 @@ customElements.whenDefined("ha-svg-icon").then(() => {
       `;
     this.shadowRoot.appendChild(styleEl);
     const root = this.shadowRoot.querySelector("g");
-    console.log(paths);
     if (root.firstElementChild) {
       root.firstElementChild.style.display = "none";
     }
