@@ -32,7 +32,9 @@ So,
 
 - to get a solid heart, use `fas:heart`
 - to get a heart outline, use `far:heart`
-- to get the twitter symbol, use `fab:twitter`
+- to get the twitter symbol, use `fab:github`
+
+![image](https://user-images.githubusercontent.com/1299821/118323896-95ef1300-b501-11eb-9ff7-5ca536e65747.png)
 
 The icons are useable anywhere in Home Assistant - not only in lovelace.
 
@@ -63,6 +65,17 @@ fontawesome:
 ```
 
 That's it.
+
+### Does this work with duotone icons?
+
+Yes. Finally!
+
+> Note, though, that the free fontawesome icon sets do not contain any duotone icons, and thus are not bundled with this integration.
+
+If the `<path>` elements of your custom svg file have the classes `fa-primary` and `fa-secondary` or `primary` and `secondary`, they will be colored differently.
+
+If you don't like how it looks, try adding `#invert`, `#color` or `#color-invert` to the icon name, e.g: `fapro:my-custom-icon#invert`
+![image](https://user-images.githubusercontent.com/1299821/118324014-bf0fa380-b501-11eb-890b-126951d67cef.png)
 
 ---
 
