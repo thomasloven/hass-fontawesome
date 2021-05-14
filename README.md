@@ -38,23 +38,32 @@ So,
 
 The icons are useable anywhere in Home Assistant - not only in lovelace.
 
+## Using with custom icons
+
+If you have other svg icons you want to use (including but not limited to the Fontawesome Pro set), you can do so by placing the `.svg` files in `<Home Assistant Config>/custom_icons/`. You will need to create this directory yourself.
+
+You can then use those icons with the `fapro:` prefix. E.g. `fapro:lamp` will get the icon in the file `<Home Assistant Config>/custom_icons/lamp.svg`.
+
+### Duotone icons
+
+If you have duotone icons, they should contain path elements with the `id`s `fa-primary` and `fa-secondary` or `primary` and `secondary`.
+
+You can adjust how the icons look a bit by using the suffixes `#invert`, `#color` or `#volor-invert`
+![image](https://user-images.githubusercontent.com/1299821/118324014-bf0fa380-b501-11eb-890b-126951d67cef.png)
+
+### More advanded icons
+
+You can also use more advanced icons, e.g. with multiple colors if you add the suffix `#fullcolor`.
+![ISmIwO2TJN](https://user-images.githubusercontent.com/1299821/118335863-d4d89500-b510-11eb-8d01-2ccf5bbbbba5.gif)
+
+You can find some nice ones over at [flaticons.com](https://www.flaticon.com/).
+
+> Note: SVG files can also contain embedded CSS inside `<style>` tags... <br>
+> This gives you some [interesting](https://user-images.githubusercontent.com/1299821/118336065-41539400-b511-11eb-810b-e99f6c089eed.gif)... [posibilities](https://user-images.githubusercontent.com/1299821/118336069-4284c100-b511-11eb-8b62-4d2a860a1b3c.gif)...
+>
+> Hass-fontawesome will not allow any embedded javascript, though.
+
 # FAQ
-
-### Can I use this with my Pro icon set?
-
-Yes.
-You need the `.svg` files from the Pro icon set.
-
-Place the icon files in `<Home Assistant config>/custom_icons/`.
-You will need to create this directory yourself, and the filenames must end with `.svg`
-
-Then access your icons with the `fapro:` prefix, e.g. `fapro:lightbulb-on`.
-
-### Can I add non-fontawesome icons using this?
-
-Yes, provided you have svg files of the icons which consist one or more `<path>` elements and no transforms or other weird stuff.
-
-Just do the same as for the Pro icon set above. Put svg files in the same directory, and use the same prefix.
 
 ### Can I set this up in configure.yaml instead?
 
@@ -65,17 +74,6 @@ fontawesome:
 ```
 
 That's it.
-
-### Does this work with duotone icons?
-
-Yes. Finally!
-
-> Note, though, that the free fontawesome icon sets do not contain any duotone icons, and thus are not bundled with this integration.
-
-If the `<path>` elements of your custom svg file have the classes `fa-primary` and `fa-secondary` or `primary` and `secondary`, they will be colored differently.
-
-If you don't like how it looks, try adding `#invert`, `#color` or `#color-invert` to the icon name, e.g: `fapro:my-custom-icon#invert`
-![image](https://user-images.githubusercontent.com/1299821/118324014-bf0fa380-b501-11eb-890b-126951d67cef.png)
 
 ---
 

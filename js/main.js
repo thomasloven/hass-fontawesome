@@ -38,7 +38,19 @@ const preProcessIcon = async (iconSet, iconName) => {
     }
   }
 
-  return { viewBox, path, paths, format };
+  // Don't allow full code to be used if the svg may contain javascript
+  let fullCode = null;
+  const svgEl = doc.querySelector("svg");
+  const hasOn = Array.from(svgEl.attributes).some((a) =>
+    a.name.startsWith("on")
+  );
+  if (!hasOn) {
+    if (!svgEl.getElementsByTagName("script").length) {
+      fullCode = svgEl;
+    }
+  }
+
+  return { viewBox, path, paths, format, fullCode };
 };
 
 const getIcon = (iconSet, iconName) => {
@@ -51,6 +63,8 @@ const getIcon = (iconSet, iconName) => {
     resolve(ICON_STORE[icon]);
   });
 };
+
+window.getIcon = getIcon;
 
 if (!("customIconsets" in window)) {
   window.customIconsets = {};
@@ -76,9 +90,18 @@ customElements.whenDefined("ha-icon").then(() => {
     if (!el || !el.setPaths) {
       return;
     }
-    el.setPaths(icon.paths);
-    if (icon.format) {
-      el.classList.add(...icon.format.split("-"));
+    if (icon.fullCode && icon.format === "fullcolor") {
+      await el.updateComplete;
+      const root = el.shadowRoot.querySelector("g");
+      if (root.firstElementChild) {
+        root.firstElementChild.style.display = "none";
+      }
+      root.appendChild(icon.fullCode.cloneNode(true));
+    } else {
+      el.setPaths(icon.paths);
+      if (icon.format) {
+        el.classList.add(...icon.format.split("-"));
+      }
     }
   };
 });
