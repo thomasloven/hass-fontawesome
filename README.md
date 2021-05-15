@@ -61,7 +61,15 @@ You can find some nice ones over at [flaticons.com](https://www.flaticon.com/).
 > Note: SVG files can also contain embedded CSS inside `<style>` tags... <br>
 > This gives you some [interesting](https://user-images.githubusercontent.com/1299821/118336065-41539400-b511-11eb-810b-e99f6c089eed.gif)... [posibilities](https://user-images.githubusercontent.com/1299821/118336069-4284c100-b511-11eb-8b62-4d2a860a1b3c.gif)...
 >
-> Hass-fontawesome will not allow any embedded javascript, though.
+> Hass-fontawesome will not allow any icons containing embedded javascript, though.
+
+---
+
+**IMPORTANT:** As the note above implies, SVG can contain CSS and Javascript, and thus shall be considered unsafe. Home Assistant normally protects you from this by unly using a very specific part of the SVG file, but using the `#fullcolor` suffix circumvents this protection. I have tried adding another layer instead, but as those things go, you're only safe from the things you _know_.
+
+In short: Only do this with icons you trust (and preferably have inspected the code for).
+
+---
 
 # FAQ
 
