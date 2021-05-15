@@ -32,7 +32,7 @@ So,
 
 - to get a solid heart, use `fas:heart`
 - to get a heart outline, use `far:heart`
-- to get the twitter symbol, use `fab:github`
+- to get the github logo, use `fab:github`
 
 ![image](https://user-images.githubusercontent.com/1299821/118323896-95ef1300-b501-11eb-9ff7-5ca536e65747.png)
 
@@ -48,7 +48,7 @@ You can then use those icons with the `fapro:` prefix. E.g. `fapro:lamp` will ge
 
 If you have duotone icons, they should contain path elements with the `id`s `fa-primary` and `fa-secondary` or `primary` and `secondary`.
 
-You can adjust how the icons look a bit by using the suffixes `#invert`, `#color` or `#volor-invert`
+You can adjust how the icons look a bit by using the suffixes `#invert`, `#color` or `#color-invert`
 ![image](https://user-images.githubusercontent.com/1299821/118324014-bf0fa380-b501-11eb-890b-126951d67cef.png)
 
 ### More advanded icons
