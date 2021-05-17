@@ -92,10 +92,14 @@ customElements.whenDefined("ha-icon").then(() => {
     }
     if (icon.fullCode && icon.format === "fullcolor") {
       await el.updateComplete;
-      const root = el.shadowRoot.querySelector("g");
-      if (root.firstElementChild) {
-        root.firstElementChild.style.display = "none";
-      }
+      const root = el.shadowRoot.querySelector("svg");
+      const styleEl = document.createElement("style");
+      styleEl.innerHTML = `
+        svg:first-child>g:first-of-type>path {
+          display: none;
+        }
+      `;
+      root.appendChild(styleEl);
       root.appendChild(icon.fullCode.cloneNode(true));
     } else {
       el.setPaths(icon.paths);
