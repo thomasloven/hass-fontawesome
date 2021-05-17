@@ -136,12 +136,12 @@ customElements.whenDefined("ha-svg-icon").then(() => {
       :host(.color.invert) .primary {
         fill: var(--icon-secondary-color, var(--disabled-text-color));
       }
+      path:not(.primary):not(.secondary) {
+        opacity: 0;
+      }
       `;
     this.shadowRoot.appendChild(styleEl);
     const root = this.shadowRoot.querySelector("g");
-    if (root.firstElementChild) {
-      root.firstElementChild.style.display = "none";
-    }
     for (const k in paths) {
       const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
       el.setAttribute("d", paths[k]);
