@@ -19,7 +19,7 @@ ICONS_URL = f'/{DOMAIN}/icons'
 ICONLIST_URL = f'/{DOMAIN}/list'
 ICONS_PATH = f'custom_components/{DOMAIN}/data'
 CUSTOM_ICONS_URL = f'/{DOMAIN}/icons/pro'
-CUSTOM_ICONS_PATH = 'custom_icons/'
+CUSTOM_ICONS_PATH = 'custom_icons'
 
 
 CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
