@@ -12,7 +12,7 @@ LOADER_PATH = f'custom_components/{DOMAIN}/main.js'
 ICONS_URL = f'/{DOMAIN}/icons'
 ICONS_PATH = f'custom_components/{DOMAIN}/data'
 CUSTOM_ICONS_URL = f'/{DOMAIN}/icons/pro'
-CUSTOM_ICONS_PATH = 'custom_icons/'
+CUSTOM_ICONS_PATH = 'custom_icons'
 
 
 async def async_setup(hass, config):
