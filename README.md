@@ -51,7 +51,7 @@ If you have duotone icons, they should contain path elements with the `id`s `fa-
 You can adjust how the icons look a bit by using the suffixes `#invert`, `#color` or `#color-invert`
 ![image](https://user-images.githubusercontent.com/1299821/118324014-bf0fa380-b501-11eb-890b-126951d67cef.png)
 
-### More advanded icons
+### More advanced icons
 
 You can also use more advanced icons, e.g. with multiple colors if you add the suffix `#fullcolor`.
 ![ISmIwO2TJN](https://user-images.githubusercontent.com/1299821/118335863-d4d89500-b510-11eb-8d01-2ccf5bbbbba5.gif)
