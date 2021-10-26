@@ -42,16 +42,28 @@ The icons are useable anywhere in Home Assistant - not only in lovelace.
 
 If you have other svg icons you want to use (including but not limited to the Fontawesome Pro set), you can do so by placing the `.svg` files in `<Home Assistant Config>/custom_icons/`. You will need to create this directory yourself.
 
-You can then use those icons with the `fapro:` prefix. E.g. `fapro:lamp` will get the icon in the file `<Home Assistant Config>/custom_icons/lamp.svg`.
+You can then use those icons with the `fapro:` prefix. E.g. `fapro:lamp` will get the icon in the file `<Home Assistant Config>/custom_icons/lamp.svg`. A nested directory structure is supported. `fapro:duotone/lamp` will get `<Home Assistant Config>/custom_icons/duotone/lamp.svg` 
+
+## Customizing size and color
+
+You can set custom primary colors (and secondary for duotones) with a comma separated list with `key:value` pairs in a suffix. It supports any color format supported by CSS. e.g. `#primary-color:red,secondary-color:#bada55`. You can adjust size and color similarly. Be sure to provide a units (e.g. `px`) for the size. The secondary color/opacity is ignored by non-duotone icons and the secondary color will inherit the primary color if a secondary one isn't specified (secondary colors have opacity of 0.4 by default). The secondary opacity is set to 1.0 if you set a secondary color and not a secondary opacity. Here's a full example:
+
+```
+icon: fapro:duotone/jack-o-lantern#primary-color=#f7c632,secondary-color=#f75b02,primary-opacity=0.8,secondary-opacity=0.9,size=30px
+```
+
+<!-- insert example image? -->
+
+As of Oct 26, 2021, the default size for the icons is 24px, which is smaller than before and should bring them more in line with the default set of icons (Material Design icons).
 
 ### Duotone icons
 
 If you have duotone icons, they should contain path elements with the `id`s `fa-primary` and `fa-secondary` or `primary` and `secondary`.
 
-You can adjust how the icons look a bit by using the suffixes `#invert`, `#color` or `#color-invert`
+You can adjust how the icons look a bit by using the suffixes `#invert`, `#color` or `#color-invert`. These are ignored if you provide custom colors/opacities.
 ![image](https://user-images.githubusercontent.com/1299821/118324014-bf0fa380-b501-11eb-890b-126951d67cef.png)
 
-### More advanded icons
+### More advanced icons
 
 You can also use more advanced icons, e.g. with multiple colors if you add the suffix `#fullcolor`.
 ![ISmIwO2TJN](https://user-images.githubusercontent.com/1299821/118335863-d4d89500-b510-11eb-8d01-2ccf5bbbbba5.gif)

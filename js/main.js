@@ -17,8 +17,42 @@ const PATH_CLASSES = {
   secondary: "secondary",
 };
 
+const parseOptions = (optionStr) => {
+  const options = {};
+  if (!optionStr) {
+    return options;
+  }
+
+  const optionParts = optionStr.split(",");
+  optionParts.forEach((part) => {
+    part = part.trim();
+    if (["invert", "color", "color-invert"].includes(part)) {
+      options.format = part;
+      return;
+    }
+
+    const [prop, val] = part.split("=").map((subpart) => subpart.trim());
+    if (prop === "primary-color") {
+      options.primaryColor = val;
+    } else if (prop === "secondary-color") {
+      options.secondaryColor = val;
+    } else if (prop === "primary-opacity") {
+      options.primaryOpacity = val;
+    } else if (prop === "secondary-opacity") {
+      options.secondaryOpacity = val;
+    } else if (prop === "size") {
+      options.size = val;
+    }
+    // could log a warning here that there was an unsupported option
+  });
+
+  return options;
+};
+
 const preProcessIcon = async (iconSet, iconName) => {
-  const [icon, format] = iconName.split("#");
+  const [icon, ...optionStrs] = iconName.split("#");
+  // need to account for `#f8bb2f` style colors
+  const options = parseOptions((optionStrs || []).join("#").trim());
   const data = await fetch(`/${DOMAIN}/icons/${iconSet}/${icon}.svg`);
   const text = await data.text();
   const parser = new DOMParser();
@@ -41,16 +75,14 @@ const preProcessIcon = async (iconSet, iconName) => {
   // Don't allow full code to be used if the svg may contain javascript
   let fullCode = null;
   const svgEl = doc.querySelector("svg");
-  const hasOn = Array.from(svgEl.attributes).some((a) =>
-    a.name.startsWith("on")
-  );
+  const hasOn = Array.from(svgEl.attributes).some((a) => a.name.startsWith("on"));
   if (!hasOn) {
     if (!svgEl.getElementsByTagName("script").length) {
       fullCode = svgEl;
     }
   }
 
-  return { viewBox, path, paths, format, fullCode };
+  return { name: icon, viewBox, path, paths, options, fullCode };
 };
 
 const getIcon = (iconSet, iconName) => {
@@ -83,6 +115,7 @@ customElements.whenDefined("ha-icon").then(() => {
     const icon = await promise;
     this._path = icon.path;
     this._viewBox = icon.viewBox;
+    icon.options = icon.options || {};
 
     await this.UpdateComplete;
 
@@ -90,7 +123,7 @@ customElements.whenDefined("ha-icon").then(() => {
     if (!el || !el.setPaths) {
       return;
     }
-    if (icon.fullCode && icon.format === "fullcolor") {
+    if (icon.fullCode && icon.options.format === "fullcolor") {
       await el.updateComplete;
       const root = el.shadowRoot.querySelector("svg");
       const styleEl = document.createElement("style");
@@ -103,8 +136,34 @@ customElements.whenDefined("ha-icon").then(() => {
       root.appendChild(icon.fullCode.cloneNode(true));
     } else {
       el.setPaths(icon.paths);
-      if (icon.format) {
-        el.classList.add(...icon.format.split("-"));
+      if (
+        icon.options.primaryColor ||
+        icon.options.secondaryColor ||
+        icon.options.primaryOpacity ||
+        icon.options.secondaryOpacity
+      ) {
+        el.classList.add("custom-colors");
+      } else if (icon.options.format) {
+        el.classList.add(...icon.options.format.split("-"));
+      }
+      if (icon.options.primaryColor) {
+        el.style.setProperty("--fa-primary-color", icon.options.primaryColor);
+        el.style.color = icon.options.primaryColor;
+      }
+      if (icon.options.secondaryColor) {
+        el.style.setProperty("--fa-secondary-color", icon.options.secondaryColor);
+        if (!icon.options.secondaryOpacity) {
+          el.style.setProperty("--fa-secondary-opacity", "1.0");
+        }
+      }
+      if (icon.options.primaryOpacity) {
+        el.style.setProperty("--fa-primary-opacity", icon.options.primaryOpacity);
+      }
+      if (icon.options.secondaryOpacity) {
+        el.style.setProperty("--fa-secondary-opacity", icon.options.secondaryOpacity);
+      }
+      if (icon.options.size) {
+        el.style.setProperty("--fa-icon-size", icon.options.size);
       }
     }
   };
@@ -116,28 +175,46 @@ customElements.whenDefined("ha-svg-icon").then(() => {
   HaSvgIcon.prototype.setPaths = async function (paths) {
     await this.updateComplete;
     if (paths == undefined || Object.keys(paths).length === 0) return;
-    const styleEl =
-      this.shadowRoot.querySelector("style") || document.createElement("style");
+    const styleEl = this.shadowRoot.querySelector("style") || document.createElement("style");
     styleEl.innerHTML = `
+    :host {
+        display: var(--ha-icon-display, inline-flex);
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        vertical-align: middle;
+
+        width: var(--fa-icon-size, var(--mdc-icon-size, 24px));
+        height: var(--fa-icon-size, var(--mdc-icon-size, 24px));
+        color: var(--fa-primary-color, inherit);
+      }
       .secondary {
         opacity: 0.4;
       }
-      :host(.invert) .secondary {
+      :host(.custom-colors), :host(.custom-colors) .primary {
+        color: var(--fa-primary-color, inherit);
+        opacity: var(--fa-primary-opacity, 1.0);
+      }
+      :host(.custom-colors) .secondary {
+        color: var(--fa-secondary-color, var(--fa-primary-color, inherit));
+        opacity: var(--fa-secondary-opacity, 0.4);
+      }
+      :host(.invert:not(.custom-colors)) .secondary {
         opacity: 1;
       }
-      :host(.invert) .primary {
+      :host(.invert:not(.custom-colors)) .primary {
         opacity: 0.4;
       }
-      :host(.color) .primary {
+      :host(.color:not(.custom-colors)) .primary {
         opacity: 1;
       }
-      :host(.color) .secondary {
+      :host(.color:not(.custom-colors)) .secondary {
         opacity: 1;
       }
-      :host(.color:not(.invert)) .secondary {
+      :host(.color:not(.invert):not(.custom-colors)) .secondary {
         fill: var(--icon-secondary-color, var(--disabled-text-color));
       }
-      :host(.color.invert) .primary {
+      :host(.color.invert:not(.custom-colors)) .primary {
         fill: var(--icon-secondary-color, var(--disabled-text-color));
       }
       path:not(.primary):not(.secondary) {
