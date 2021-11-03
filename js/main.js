@@ -64,16 +64,38 @@ const getIcon = (iconSet, iconName) => {
   });
 };
 
-window.getIcon = getIcon;
+const getIconList = async (iconSet) => {
+  const data = await fetch(`/${DOMAIN}/list/${iconSet}`);
+  const text = await data.text();
+  return JSON.parse(text);
+};
+
+// window.getIconList = getIconList;
+// window.getIcon = getIcon;
 
 if (!("customIconsets" in window)) {
   window.customIconsets = {};
 }
+if (!("customIcons" in window)) {
+  window.customIcons = {};
+}
 
-window.customIconsets["fab"] = (iconName) => getIcon("brands", iconName);
-window.customIconsets["far"] = (iconName) => getIcon("regular", iconName);
-window.customIconsets["fas"] = (iconName) => getIcon("solid", iconName);
-window.customIconsets["fapro"] = (iconName) => getIcon("pro", iconName);
+window.customIcons["fab"] = {
+  getIcon: (iconName) => getIcon("brands", iconName),
+  getIconList: () => getIconList("brands"),
+};
+window.customIcons["far"] = {
+  getIcon: (iconName) => getIcon("regular", iconName),
+  getIconList: () => getIconList("regular"),
+};
+window.customIcons["fas"] = {
+  getIcon: (iconName) => getIcon("solid", iconName),
+  getIconList: () => getIconList("solid"),
+};
+window.customIcons["fapro"] = {
+  getIcon: (iconName) => getIcon("pro", iconName),
+  getIconList: () => getIconList("pro"),
+};
 window.customIconsets["facustom"] = (iconName) => getIcon("pro", iconName);
 
 // Duotone patches
