@@ -101,8 +101,9 @@ window.customIconsets["facustom"] = (iconName) => getIcon("pro", iconName);
 // Duotone patches
 customElements.whenDefined("ha-icon").then(() => {
   const HaIcon = customElements.get("ha-icon");
-  HaIcon.prototype._setCustomPath = async function (promise) {
+  HaIcon.prototype._setCustomPath = async function (promise, requestedIcon) {
     const icon = await promise;
+    if (requestedIcon !== this.icon) return;
     this._path = icon.path;
     this._viewBox = icon.viewBox;
 
@@ -112,6 +113,8 @@ customElements.whenDefined("ha-icon").then(() => {
     if (!el || !el.setPaths) {
       return;
     }
+    el.clearPaths();
+
     if (icon.fullCode && icon.format === "fullcolor") {
       await el.updateComplete;
       const root = el.shadowRoot.querySelector("svg");
@@ -134,6 +137,23 @@ customElements.whenDefined("ha-icon").then(() => {
 
 customElements.whenDefined("ha-svg-icon").then(() => {
   const HaSvgIcon = customElements.get("ha-svg-icon");
+
+  HaSvgIcon.prototype.clearPaths = async function () {
+    await this.updateComplete;
+
+    const svgRoot = this.shadowRoot.querySelector("svg");
+    while (svgRoot && svgRoot.children.length > 1)
+      svgRoot.removeChild(svgRoot.lastChild);
+
+    const svgGroup = this.shadowRoot.querySelector("g");
+    while (svgGroup && svgGroup.children.length > 1)
+      svgGroup.removeChild(svgGroup.lastChild);
+
+    while (this.shadowRoot.querySelector("style")) {
+      const el = this.shadowRoot.querySelector("style");
+      el.parentNode.removeChild(el);
+    }
+  };
 
   HaSvgIcon.prototype.setPaths = async function (paths) {
     await this.updateComplete;
