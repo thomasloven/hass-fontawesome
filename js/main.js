@@ -149,8 +149,8 @@ customElements.whenDefined("ha-svg-icon").then(() => {
     while (svgGroup && svgGroup.children.length > 1)
       svgGroup.removeChild(svgGroup.lastChild);
 
-    while (this.shadowRoot.querySelector("style")) {
-      const el = this.shadowRoot.querySelector("style");
+    while (this.shadowRoot.querySelector("style.fontawesome")) {
+      const el = this.shadowRoot.querySelector("style.fontawesome");
       el.parentNode.removeChild(el);
     }
   };
@@ -159,7 +159,9 @@ customElements.whenDefined("ha-svg-icon").then(() => {
     await this.updateComplete;
     if (paths == undefined || Object.keys(paths).length === 0) return;
     const styleEl =
-      this.shadowRoot.querySelector("style") || document.createElement("style");
+      this.shadowRoot.querySelector("style.fontawesome") ||
+      document.createElement("style");
+    styleEl.classList.add("fontawesome");
     styleEl.innerHTML = `
       .secondary {
         opacity: 0.4;
