@@ -3,6 +3,8 @@ import logging
 from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http.view import HomeAssistantView
 
+from homeassistant.helpers import config_validation as cv
+
 import json
 from os import walk, path
 
@@ -20,6 +22,9 @@ CUSTOM_ICONS_URL = f'/{DOMAIN}/icons/pro'
 CUSTOM_ICONS_PATH = 'custom_icons/'
 
 
+CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
+
+
 class ListingView(HomeAssistantView):
 
     requires_auth = False
@@ -32,7 +37,12 @@ class ListingView(HomeAssistantView):
     async def get(self, request):
         icons = []
         for (dirpath, dirnames, filenames) in walk(self.iconpath):
-            icons.extend([{"name": path.join(dirpath[len(self.iconpath):], fn[:-4])} for fn in filenames if fn.endswith(".svg")])
+            icons.extend(
+                [
+                    ({"name": path.join(dirpath[len(self.iconpath):], fn[:-4])}
+                        for fn in filenames if fn.endswith(".svg"))
+                ]
+            )
         return json.dumps(icons)
 
 

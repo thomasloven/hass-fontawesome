@@ -1,7 +1,7 @@
 {
   "name": "fontawesome",
   "private": true,
-  "version": "2.1.5",
+  "version": "2.2.0",
   "description": "",
   "scripts": {
     "export": "./export.sh",
@@ -12,11 +12,11 @@
   "author": "Thomas Lovén",
   "license": "MIT",
   "devDependencies": {
-    "raw-loader": "^3.1.0",
-    "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0"
+    "raw-loader": "^4.0.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3"
+    "@fortawesome/fontawesome-free": "^6.4.2"
   }
 }

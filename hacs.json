@@ -1,5 +1,4 @@
 {
-    "name": "fontawesome",
-    "render_readme": true,
-    "homeassistant": "2021.11.0b0"
+  "name": "fontawesome",
+  "render_readme": true
 }

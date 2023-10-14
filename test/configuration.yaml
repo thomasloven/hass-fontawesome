@@ -3,3 +3,5 @@ default_config:
 demo:
 
 hacs:
+
+fontawesome:

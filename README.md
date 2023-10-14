@@ -2,7 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-Use free icons from the [fontawesome](https://fontawesome.com) set in Home-assistant.
+Use free icons from the [fontawesome](https://fontawesome.com) version 6.4.2 set in Home-assistant.
 
 # Installation instructions
 

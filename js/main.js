@@ -1,3 +1,5 @@
+import aliases from "./names.json";
+
 const DOMAIN = "fontawesome";
 
 const ICON_STORE = {};
@@ -18,7 +20,10 @@ const PATH_CLASSES = {
 };
 
 const preProcessIcon = async (iconSet, iconName) => {
-  const [icon, format] = iconName.split("#");
+  let [icon, format] = iconName.split("#");
+  if (aliases[icon]) {
+    icon = aliases[icon];
+  }
   const data = await fetch(`/${DOMAIN}/icons/${iconSet}/${icon}.svg`);
   const text = await data.text();
   const parser = new DOMParser();
