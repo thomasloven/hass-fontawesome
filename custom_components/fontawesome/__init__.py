@@ -39,8 +39,8 @@ class ListingView(HomeAssistantView):
         for (dirpath, dirnames, filenames) in walk(self.iconpath):
             icons.extend(
                 [
-                    ({"name": path.join(dirpath[len(self.iconpath):], fn[:-4])}
-                        for fn in filenames if fn.endswith(".svg"))
+                    {"name": path.join(dirpath[len(self.iconpath):], fn[:-4])}
+                    for fn in filenames if fn.endswith(".svg")
                 ]
             )
         return json.dumps(icons)
