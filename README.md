@@ -65,7 +65,7 @@ You can find some nice ones over at [flaticons.com](https://www.flaticon.com/).
 
 ---
 
-**IMPORTANT:** As the note above implies, SVG can contain CSS and Javascript, and thus shall be considered unsafe. Home Assistant normally protects you from this by unly using a very specific part of the SVG file, but using the `#fullcolor` suffix circumvents this protection. I have tried adding another layer instead, but as those things go, you're only safe from the things you _know_.
+**IMPORTANT:** As the note above implies, SVG can contain CSS and Javascript, and thus shall be considered unsafe. Home Assistant normally protects you from this by only using a very specific part of the SVG file, but using the `#fullcolor` suffix circumvents this protection. I have tried adding another layer instead, but as those things go, you're only safe from the things you _know_.
 
 In short: Only do this with icons you trust (and preferably have inspected the code for).
 
