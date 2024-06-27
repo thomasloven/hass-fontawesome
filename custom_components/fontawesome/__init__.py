@@ -1,6 +1,7 @@
 import logging
 
 from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.http.view import HomeAssistantView
 
 from homeassistant.helpers import config_validation as cv
@@ -47,30 +48,42 @@ class ListingView(HomeAssistantView):
 
 
 async def async_setup(hass, config):
-    hass.http.register_static_path(
-            LOADER_URL,
-            hass.config.path(LOADER_PATH),
-            True
-        )
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                LOADER_URL,
+                hass.config.path(LOADER_PATH),
+                True
+            )
+        ]
+    )
     add_extra_js_url(hass, LOADER_URL)
 
     for iset in ["brands", "regular", "solid"]:
-        hass.http.register_static_path(
-                ICONS_URL + "/" + iset,
-                hass.config.path(ICONS_PATH + "/" + iset),
-                True
-            )
+        await hass.http.async_register_static_paths(
+            [
+                StaticPathConfig(
+                    ICONS_URL + "/" + iset,
+                    hass.config.path(ICONS_PATH + "/" + iset),
+                    True
+                )
+            ]
+        )
         hass.http.register_view(
                 ListingView(
                     ICONLIST_URL + "/" + iset,
                     hass.config.path(ICONS_PATH + "/" + iset)
                 )
             )
-    hass.http.register_static_path(
-            CUSTOM_ICONS_URL,
-            hass.config.path(CUSTOM_ICONS_PATH),
-            True
-        )
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                CUSTOM_ICONS_URL,
+                hass.config.path(CUSTOM_ICONS_PATH),
+                True
+            )
+        ]
+    )
     hass.http.register_view(
             ListingView(
                 ICONLIST_URL + "/pro",
