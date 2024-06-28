@@ -3,10 +3,11 @@ import logging
 from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.http.view import HomeAssistantView
+from homeassistant.core import async_get_hass
 from homeassistant.helpers import config_validation as cv
 
 import json
-from os import path, scandir
+from os import path, walk
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,17 +37,19 @@ class ListingView(HomeAssistantView):
         self.name = "Icon Listing"
 
     async def get(self, request):
-        icons = []
-        scan_result = await self.hass.async_add_executor_job(scandir, self.iconpath)
-        for file in scan_result:
-            if file.name.endswith(".svg"):
-                icons.extend(
-                    [
-                        {"name": path.join(self.iconpath[len(self.iconpath):], file.name[:-4])}
-                    ]
-                )
-        return json.dumps(icons)
+        icons_list = await self.hass.async_add_executor_job(self.get_icons_list, self.iconpath)
+        return icons_list
 
+    def get_icons_list(self, iconpath):
+        icons = []
+        for (dirpath, dirnames, filenames) in walk(iconpath):
+            icons.extend(
+                [
+                    {"name": path.join(dirpath[len(iconpath):], fn[:-4])}
+                    for fn in filenames if fn.endswith(".svg")
+                ]
+            )
+        return json.dumps(icons)
 
 async def async_setup(hass, config):
     await hass.http.async_register_static_paths(
