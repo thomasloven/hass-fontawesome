@@ -4,14 +4,6 @@ const DOMAIN = "fontawesome";
 
 const ICON_STORE = {};
 
-const PREFIXES = {
-  fab: "brands",
-  far: "regular",
-  fas: "solid",
-  fapro: "pro",
-  facustom: "pro",
-};
-
 const PATH_CLASSES = {
   "fa-primary": "primary",
   "fa-secondary": "secondary",
@@ -34,28 +26,26 @@ const preProcessIcon = async (iconSet, iconName) => {
   const viewBox = doc.querySelector("svg").getAttribute("viewBox");
   const _paths = doc.querySelectorAll("path");
   const paths = {};
-  let path = "";
+  let path = undefined;
+  let secondaryPath = undefined;
+  let sumpath = "";
   for (const pth of _paths) {
-    path = path + pth.getAttribute("d");
+    sumpath = sumpath + pth.getAttribute("d");
     const cls = pth.classList[0];
-    if (PATH_CLASSES[cls]) {
-      paths[PATH_CLASSES[cls]] = pth.getAttribute("d");
-    }
+    if (PATH_CLASSES[cls] == "primary") path = pth.getAttribute("d");
+    if (PATH_CLASSES[cls] == "secondary") secondaryPath = pth.getAttribute("d");
   }
+  path = path ?? sumpath;
 
   // Don't allow full code to be used if the svg may contain javascript
-  let fullCode = null;
-  const svgEl = doc.querySelector("svg");
-  const hasOn = Array.from(svgEl.attributes).some((a) =>
-    a.name.startsWith("on")
-  );
-  if (!hasOn) {
-    if (!svgEl.getElementsByTagName("script").length) {
-      fullCode = svgEl;
-    }
-  }
+  let innerSVG = doc.querySelector("svg");
+  // Don't allow full code if any attribute is onClick or something
+  if (Array.from(innerSVG?.attributes).some((a) => a.name.startsWith("on")))
+    innerSVG = undefined;
+  // Don't allow full code if it contains <script> tags
+  if (innerSVG?.getElementsByTagName("script").length) innerSVG = undefined;
 
-  return { viewBox, path, paths, format, fullCode };
+  return { viewBox, path, secondaryPath, paths: sumpath, format, innerSVG };
 };
 
 const getIcon = (iconSet, iconName) => {
@@ -103,103 +93,25 @@ window.customIcons["fapro"] = {
 };
 window.customIconsets["facustom"] = (iconName) => getIcon("pro", iconName);
 
-// Duotone patches
-customElements.whenDefined("ha-icon").then(() => {
-  const HaIcon = customElements.get("ha-icon");
+// Fullcolor support patch
+customElements.whenDefined("ha-icon").then((HaIcon) => {
+  const orig = HaIcon.prototype._setCustomPath;
   HaIcon.prototype._setCustomPath = async function (promise, requestedIcon) {
+    await orig?.bind(this)?.(promise, requestedIcon);
+
     const icon = await promise;
     if (requestedIcon !== this.icon) return;
-    this._path = icon.path;
-    this._viewBox = icon.viewBox;
+
+    if (!icon.innerSVG || icon.format !== "fullcolor") return;
 
     await this.UpdateComplete;
-
     const el = this.shadowRoot.querySelector("ha-svg-icon");
-    if (!el || !el.setPaths) {
-      return;
-    }
-    el.clearPaths();
+    await el?.updateComplete;
 
-    if (icon.fullCode && icon.format === "fullcolor") {
-      await el.updateComplete;
-      const root = el.shadowRoot.querySelector("svg");
-      const styleEl = document.createElement("style");
-      styleEl.innerHTML = `
-        svg:first-child>g:first-of-type>path {
-          display: none;
-        }
-      `;
-      root.appendChild(styleEl);
-      root.appendChild(icon.fullCode.cloneNode(true));
-    } else {
-      el.setPaths(icon.paths);
-      if (icon.format) {
-        el.classList.add(...icon.format.split("-"));
-      }
-    }
-  };
-});
+    this._path = undefined;
+    this._secondaryPath = undefined;
 
-customElements.whenDefined("ha-svg-icon").then(() => {
-  const HaSvgIcon = customElements.get("ha-svg-icon");
-
-  HaSvgIcon.prototype.clearPaths = async function () {
-    await this.updateComplete;
-
-    const svgRoot = this.shadowRoot.querySelector("svg");
-    while (svgRoot && svgRoot.children.length > 1)
-      svgRoot.removeChild(svgRoot.lastChild);
-
-    const svgGroup = this.shadowRoot.querySelector("g");
-    while (svgGroup && svgGroup.children.length > 1)
-      svgGroup.removeChild(svgGroup.lastChild);
-
-    while (this.shadowRoot.querySelector("style.fontawesome")) {
-      const el = this.shadowRoot.querySelector("style.fontawesome");
-      el.parentNode.removeChild(el);
-    }
-  };
-
-  HaSvgIcon.prototype.setPaths = async function (paths) {
-    await this.updateComplete;
-    if (paths == undefined || Object.keys(paths).length === 0) return;
-    const styleEl =
-      this.shadowRoot.querySelector("style.fontawesome") ||
-      document.createElement("style");
-    styleEl.classList.add("fontawesome");
-    styleEl.innerHTML = `
-      .secondary {
-        opacity: 0.4;
-      }
-      :host(.invert) .secondary {
-        opacity: 1;
-      }
-      :host(.invert) .primary {
-        opacity: 0.4;
-      }
-      :host(.color) .primary {
-        opacity: 1;
-      }
-      :host(.color) .secondary {
-        opacity: 1;
-      }
-      :host(.color:not(.invert)) .secondary {
-        fill: var(--icon-secondary-color, var(--disabled-text-color));
-      }
-      :host(.color.invert) .primary {
-        fill: var(--icon-secondary-color, var(--disabled-text-color));
-      }
-      path:not(.primary):not(.secondary) {
-        opacity: 0;
-      }
-      `;
-    this.shadowRoot.appendChild(styleEl);
-    const root = this.shadowRoot.querySelector("g");
-    for (const k in paths) {
-      const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      el.setAttribute("d", paths[k]);
-      el.classList.add(k);
-      root.appendChild(el);
-    }
+    const root = el?.shadowRoot.querySelector("svg");
+    root?.appendChild(icon.innerSVG.cloneNode(true));
   };
 });
