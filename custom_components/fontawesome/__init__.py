@@ -45,7 +45,7 @@ class ListingView(HomeAssistantView):
         for (dirpath, dirnames, filenames) in walk(iconpath):
             icons.extend(
                 [
-                    {"name": path.join(dirpath[len(iconpath):], fn[:-4])}
+                    {"name": path.join(dirpath[len(iconpath):].lstrip('/'), fn[:-4])}
                     for fn in filenames if fn.endswith(".svg")
                 ]
             )
