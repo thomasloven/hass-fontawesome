@@ -15,30 +15,35 @@
     "source=${localWorkspaceFolder}/test/custom_icons,target=/config/custom_icons,type=bind"
   ],
   "runArgs": ["--env-file", "${localWorkspaceFolder}/test/.env"],
-  "extensions": [
-    "github.vscode-pull-request-github",
-    "esbenp.prettier-vscode",
-    "spmeesseman.vscode-taskexplorer",
-    "ms-python.python"
-  ],
-  "settings": {
-    "files.eol": "\n",
-    "editor.tabSize": 2,
-    "editor.formatOnPaste": false,
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[python]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "files.trimTrailingWhitespace": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
-  }
+  "customizations": {
+      "vscode": {
+        "extensions": [
+        "github.vscode-pull-request-github",
+        "esbenp.prettier-vscode",
+        "spmeesseman.vscode-taskexplorer",
+        "ms-python.python",
+        "ms-python.black-formatter"
+        ],
+        "settings": {
+          "files.eol": "\n",
+          "editor.tabSize": 2,
+          "editor.formatOnPaste": false,
+          "editor.formatOnSave": true,
+          "editor.formatOnType": true,
+          "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+          },
+          "[typescript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+          },
+          "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter"
+          },
+          "files.trimTrailingWhitespace": true,
+          "python.linting.pylintEnabled": false,
+          "python.linting.flake8Enabled": true,
+          "python.linting.enabled": true
+        }
+      }
+    }
 }

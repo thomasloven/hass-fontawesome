@@ -1,7 +1,7 @@
 {
   "name": "fontawesome",
   "private": true,
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "",
   "scripts": {
     "export": "./export.sh",
@@ -13,10 +13,10 @@
   "license": "MIT",
   "devDependencies": {
     "raw-loader": "^4.0.2",
-    "webpack": "^5.89.0",
+    "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.4.2"
+    "@fortawesome/fontawesome-free": "^6.6.0"
   }
 }
