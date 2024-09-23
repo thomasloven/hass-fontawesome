@@ -1,12 +1,13 @@
 import logging
 
 from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.http.view import HomeAssistantView
-
+from homeassistant.core import async_get_hass
 from homeassistant.helpers import config_validation as cv
 
 import json
-from os import walk, path
+from os import path, walk
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,52 +30,70 @@ class ListingView(HomeAssistantView):
 
     requires_auth = False
 
-    def __init__(self, url, iconpath):
+    def __init__(self, url, iconpath, hass):
         self.url = url
         self.iconpath = iconpath
+        self.hass = hass
         self.name = "Icon Listing"
 
     async def get(self, request):
+        icons_list = await self.hass.async_add_executor_job(self.get_icons_list, self.iconpath)
+        return icons_list
+
+    def get_icons_list(self, iconpath):
         icons = []
-        for (dirpath, dirnames, filenames) in walk(self.iconpath):
+        for (dirpath, dirnames, filenames) in walk(iconpath):
             icons.extend(
                 [
-                    {"name": path.join(dirpath[len(self.iconpath):].lstrip('/'), fn[:-4])}
+                    {"name": path.join(dirpath[len(iconpath):].lstrip('/'), fn[:-4])}
                     for fn in filenames if fn.endswith(".svg")
                 ]
             )
         return json.dumps(icons)
 
-
 async def async_setup(hass, config):
-    hass.http.register_static_path(
-            LOADER_URL,
-            hass.config.path(LOADER_PATH),
-            True
-        )
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                LOADER_URL,
+                hass.config.path(LOADER_PATH),
+                True
+            )
+        ]
+    )
     add_extra_js_url(hass, LOADER_URL)
 
     for iset in ["brands", "regular", "solid"]:
-        hass.http.register_static_path(
-                ICONS_URL + "/" + iset,
-                hass.config.path(ICONS_PATH + "/" + iset),
-                True
-            )
+        await hass.http.async_register_static_paths(
+            [
+                StaticPathConfig(
+                    ICONS_URL + "/" + iset,
+                    hass.config.path(ICONS_PATH + "/" + iset),
+                    True
+                )
+            ]
+        )
         hass.http.register_view(
                 ListingView(
                     ICONLIST_URL + "/" + iset,
-                    hass.config.path(ICONS_PATH + "/" + iset)
+                    hass.config.path(ICONS_PATH + "/" + iset),
+                    hass
                 )
             )
-    hass.http.register_static_path(
-            CUSTOM_ICONS_URL,
-            hass.config.path(CUSTOM_ICONS_PATH),
-            True
-        )
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                CUSTOM_ICONS_URL,
+                hass.config.path(CUSTOM_ICONS_PATH),
+                True
+            )
+        ]
+    )
     hass.http.register_view(
             ListingView(
                 ICONLIST_URL + "/pro",
-                hass.config.path(CUSTOM_ICONS_PATH)
+                hass.config.path(CUSTOM_ICONS_PATH),
+                hass
             )
         )
 
