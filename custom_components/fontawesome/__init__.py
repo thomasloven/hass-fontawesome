@@ -1,5 +1,6 @@
 import logging
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http import StaticPathConfig
@@ -94,4 +95,17 @@ async def async_setup_entry(hass, entry):
 
 
 async def async_remove_entry(hass, entry):
+    return True
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old entry."""
+
+    if entry.version == 1:
+        entry.version = 2
+
+        hass.config_entries.async_update_entry(
+            entry,
+            title="Fontawesome Icons"
+        )
+        LOGGER.info("Migrating fontawesome config entry.")
     return True
