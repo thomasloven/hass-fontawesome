@@ -1,5 +1,28 @@
 # hass-fontawesome
 
+# DEPRECATED
+This integration is deprecated as of 2025-09-12.
+
+It is replaced by [Custom Icons](https://github.com/thomasloven/hass-custom_icons) which should be pretty much a drop-in replacement for most users.
+
+`hass-fontawesome` will not be updated and will not recaive bugfixes or updates to the iconsets.
+
+`hass-fontawesome` will be removed from HACS earliest 2025-12-12 
+
+---
+
+# &nbsp;
+&nbsp;
+
+# &nbsp;
+&nbsp;
+
+# &nbsp;
+&nbsp;
+
+# &nbsp;
+&nbsp;
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 Use free icons from the [fontawesome](https://fontawesome.com) version 6.6.0 set in Home-assistant.
